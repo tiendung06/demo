@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+</head>
+<body>
+    <h1 th:text="${name}"></h1>
+
+    <p>Checkbox</p>
+    <label><input type="checkbox" th:checked="${checkBoxModel.value1}" /> Option 1</label><br/>
+    <label><input type="checkbox" th:checked="${checkBoxModel.value2}" /> Option 2</label><br/>
+    <label><input type="checkbox" th:checked="${checkBoxModel.value3}" /> Option 3</label><br/>
+
+    <p>Radio</p>
+    <label><input name="gender" type="radio" th:value="male" th:checked="${person.gender == 'male'}"/>Male</label><br/>
+    <label><input name="gender" type="radio" th:value="female" th:checked="${person.gender == 'female'}"/>Female</label><br/>
+
+    <p>Image</p>
+    <img th:src="${image}" alt="" style="width: 160px" />
+</body>
+</html>
