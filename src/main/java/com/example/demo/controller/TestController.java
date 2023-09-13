@@ -1,25 +1,21 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.CheckBoxModel;
-import com.example.demo.model.PersonModel;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.BaseFont;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @RestController
 @RequestMapping()
@@ -30,84 +26,39 @@ public class TestController {
         this.templateEngine = templateEngine;
     }
 
-    @GetMapping("/file")
-    @ResponseBody
-    public ResponseEntity<?> downloadFile() {
-        String content = "This is a sample file content.";
-        byte[] data = content.getBytes(StandardCharsets.UTF_8);
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=sample.txt");
-        return ResponseEntity
-                .ok()
-                .headers(headers)
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(new InputStreamResource(byteArrayInputStream));
-    }
-
-    @GetMapping("/download")
-    public void PrintFormRegister(HttpServletResponse response) {
-        try {
-            byte[] data = readHtmlFile().getBytes(StandardCharsets.UTF_8);
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
-            response.setContentType("application/html");
-            response.setHeader("Content-Disposition", "attachment; filename=data.html");
-            IOUtils.copy(byteArrayInputStream, response.getOutputStream());
-        } catch (Exception e) {
-            ResponseEntity.ok().body("Can't get form");
-        }
-    }
-
-    @GetMapping("/generate-pdf")
-    public ResponseEntity<byte[]> generatePdf() throws Exception {
-        byte[] pdfBytes = convertHtmlToPdf(readHtmlFile());
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDispositionFormData("attachment", "output.pdf");
-        return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
-    }
-
-    public byte[] convertHtmlToPdf(String htmlContent) throws Exception {
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            ITextRenderer renderer = new ITextRenderer();
-            renderer.setDocumentFromString(htmlContent);
-            renderer.layout();
-            renderer.createPDF(outputStream, false);
-            return outputStream.toByteArray();
-        }
-    }
-
-    public String readHtmlFile() {
-        Context context = new Context();
-        context.setVariable("name", "Hello, Thymeleaf!");
-        context.setVariable("image", "https://source.unsplash.com/random");
-
-        CheckBoxModel checkBoxModel = new CheckBoxModel();
-        checkBoxModel.setValue2(true);
-        context.setVariable("checkBoxModel", checkBoxModel);
-
-        PersonModel person = new PersonModel();
-        person.setGender("male");
-        context.setVariable("person", person);
-        return templateEngine.process("index", context);
-    }
-
     @GetMapping("/pdf")
-    public void exportPdf(HttpServletResponse response) throws Exception {
-        byte[] pdfBytes = exportToPdf(readHtmlFile());
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(pdfBytes);
-        response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=data.pdf");
-        IOUtils.copy(byteArrayInputStream, response.getOutputStream());
+    public void exportFormRegisterFaceFinger(HttpServletResponse response) {
+        Context context = getContext();
+        String htmlContent = templateEngine.process("nhs", context);
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+            byte[] bytes = htmlContent.getBytes(StandardCharsets.UTF_8);
+            String utf8EncodedString = new String(bytes, StandardCharsets.UTF_8);
+            ITextRenderer renderer = new ITextRenderer();
+            Path path2 = Paths.get(new ClassPathResource("/fonts/SVN-Times New Roman.ttf").getPath());
+            renderer.getFontResolver().addFont(path2.toString(), BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            renderer.setDocumentFromString(utf8EncodedString);
+            renderer.layout();
+            renderer.createPDF(byteArrayOutputStream);
+            renderer.finishPDF();
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=data.pdf");
+            IOUtils.copy(byteArrayInputStream, response.getOutputStream());
+        } catch (DocumentException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public byte[] exportToPdf(String htmlContent) throws Exception {
-        ITextRenderer renderer = new ITextRenderer();
-        renderer.setDocumentFromString(htmlContent);
-        ByteArrayOutputStream pdfOutputStream = new ByteArrayOutputStream();
-        renderer.layout();
-        renderer.createPDF(pdfOutputStream);
-        renderer.finishPDF();
-        return pdfOutputStream.toByteArray();
+    private static Context getContext() {
+        Context context = new Context();
+        context.setVariable("name", "Đỗ Tiến Dũng");
+        context.setVariable("birth", "06/08/2001");
+        context.setVariable("nationality", "Việt Nam");
+        context.setVariable("idCard", "001201016382");
+        context.setVariable("date", "09/01/2022");
+        context.setVariable("provider", "Cục trưởng Cục cảnh sát quản lý hành chính về trật tự xã hội");
+        context.setVariable("origin", "Giao Tác, Liên Hà, Đông Anh, Hà Nội");
+        context.setVariable("phone", "0344536552");
+        return context;
     }
 }
