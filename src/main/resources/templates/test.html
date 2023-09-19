@@ -129,6 +129,10 @@
             content: none;
         }
 
+        table th, td {
+            border: 1px solid;
+        }
+
         table {
             border-collapse: collapse;
             border-spacing: 0;
@@ -224,6 +228,19 @@
 
         .logo img {
             height: 40px;
+        }
+
+        .credit {
+            margin-top: 200px;
+        }
+
+        .bank {
+            margin-top: 200px;
+            margin-bottom: 200px;
+        }
+
+        .table .sign {
+            width: 33%;
         }
     </style>
 </head>
@@ -379,6 +396,61 @@
             <p>,ngày tháng năm</p>
             <p class="label">KHÁCH HÀNG</p>
             <p>(Ký, ghi rõ họ tên)</p>
+        </div>
+    </section>
+    <section class="credit">
+        <div class="commit">
+            <h2 class="title">II.XÁC NHẬN CỦA QUỸ TÍN DỤNG NHÂN DÂN</h2>
+            <h3>Phần dành cho khách hàng là cán bộ, nhân viên QTDND</h3>
+            <p>Ông(bà) <span th:text="${name}"></span>hiện đang công tác tại cơ quan chúng tôi.</p>
+            <p>1-Chức vụ công tác <span th:text="${job}"></span>Thời hạn hiệu lực còn lại của hợp đồng lao động (Người
+                vay vốn có hợp đồng lao động có xác định thời hạn):<span th:text="${date}"></span></p>
+            <p>2- Tổng thu nhập hàng tháng (bao gồm lương và các khoản thu nhập khác) là: <span
+                    th:text="${money}"></span></p>
+            <p>3- Trường hợp người vay vốn không trả được nợ theo đúng cam kết cơ quan chúng tôi có trách nhiệm giữ lại
+                lương và các khoản thu nhập nói trên để Ngân hàng Hợp tác Chi nhánh <span th:text="${branch}"></span>thu
+                nợ vay (gốc và lãi) trực tiếp tại cơ quan. Nếu người vay vốn nghỉ việc hoặc thuyên chuyển công tác cơ
+                quan sẽ thông báo cho Ngân hàng Hợp tác Chi nhánh<span th:text="${branch}"></span>và đôn đốc người vay
+                trả hết nợ trước khi làm các thủ tục theo chế độ.</p>
+            <h3>Phần dành cho khách hàng là thành viên QTDND</h3>
+            <p>Ông(bà) <span th:text="${name}"></span>hiện đang là thành viên và:</p>
+            <p>- Có dư nợ vay vốn tại QTDND <span th:text="${branch}"></span> Trong quá trình vay vốn, Ông (Bà)<span
+                    th:text="${name}"></span>luôn trả nợ gốc và lãi đầy đủ đúng hạn (Có lịch sử trả nợ đính kèm).</p>
+            <p>- Hoặc đang gửi vốn tại QTDND <span th:text="${branch}"></span></p>
+        </div>
+        <div class="sign">
+            <p>,ngày tháng năm</p>
+            <p class="label">GIÁM ĐỐC QTDND <span th:text="${branch}"></span></p>
+            <p>(Ký, ghi rõ họ tên)</p>
+        </div>
+    </section>
+    <section class="bank">
+        <div class="commit">
+            <h2 class="title">III.PHẦN DÀNH CHO NGÂN HÀNG</h2>
+        </div>
+        <p>
+            <input type="checkbox" id="yes"/>
+            <label for="yes">Chấp thuận đề nghị phát hành thẻ ghi nợ và cho vay theo HMTC của khách hàng</label>
+        </p>
+        <p>Hạn mức thấu chi theo xét duyệt của chi nhánh</p>
+        <p>
+            <input type="checkbox" id="no"/>
+            <label for="no">Không chấp thuận đề nghị phát hành thẻ ghi nợ và cho vay theo HMTC của khách hàng, lý
+                do</label>
+        </p>
+        <div class="table">
+            <div class="sign">
+                <p class="label">CÁN BỘ TÍN DỤNG</p>
+                <p>(Ký, ghi rõ họ tên)</p>
+            </div>
+            <div class="sign">
+                <p class="label">KIỂM SOÁT</p>
+                <p>(Ký, ghi rõ họ tên)</p>
+            </div>
+            <div class="sign">
+                <p class="label">THỦ TRƯỞNG ĐƠN VỊ</p>
+                <p>(Ký, ghi rõ họ tên)</p>
+            </div>
         </div>
     </section>
 </main>

@@ -29,7 +29,7 @@ public class TestController {
     @GetMapping("/pdf")
     public void exportFormRegisterFaceFinger(HttpServletResponse response) {
         Context context = getContext();
-        String htmlContent = templateEngine.process("nhs", context);
+        String htmlContent = templateEngine.process("test", context);
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             byte[] bytes = htmlContent.getBytes(StandardCharsets.UTF_8);
             String utf8EncodedString = new String(bytes, StandardCharsets.UTF_8);
